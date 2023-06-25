@@ -16,7 +16,7 @@ class Want_To_Research(models.Model):
     )
 
     user=models.ForeignKey(User, on_delete=models.PROTECT)
-    names=models.CharField(max_length=200)
+    names=models.CharField(max_length=255, null=False, blank=False)
     kind=models.CharField(max_length=25, choices=KIND)
     is_finish=models.BooleanField(default=False)
     is_cancel=models.BooleanField(default=False)
@@ -31,7 +31,7 @@ class Want_To_Research(models.Model):
 # curfew and instability(couvre-feu et instabilité)
 class Curfew_And_Instability(models.Model):
     user=models.ForeignKey(User, on_delete=models.PROTECT)
-    reason=models.CharField(max_length=255, null=True, blank=True)
+    reason=models.CharField(max_length=255, null=False, blank=False)
     longitude=models.CharField(max_length=255, null=False, blank=False)
     latittude=models.CharField(max_length=255, null=False, blank=False)
     is_finish=models.BooleanField(default=False)
@@ -47,7 +47,7 @@ class Curfew_And_Instability(models.Model):
 # population alert(alrte de la population)
 class Population_Alert(models.Model):
     user=models.ForeignKey(User, on_delete=models.PROTECT)
-    reason_issued=models.CharField(max_length=255, null=True, blank=True)
+    reason_issued=models.CharField(max_length=255, null=False, blank=False)
     reason_to_certify=models.CharField(max_length=255, null=True, blank=True)
     longitude=models.CharField(max_length=255, null=False, blank=False)
     latittude=models.CharField(max_length=255, null=False, blank=False)
