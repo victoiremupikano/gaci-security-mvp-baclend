@@ -42,6 +42,8 @@ INSTALLED_APPS = [
     
     # My app
     'authentication',
+    'security_data',
+    'security_recognition',
 
     # third party rest app
     'rest_framework',
