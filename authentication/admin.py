@@ -1,14 +1,7 @@
 from django.contrib import admin
 from . models import(
-    User, 
-    Agent,
-    Profile, 
-    Function, 
-    Assignment,
-    Rate,
-    Station,
-    Usage,
-    Buy_Mode
+    User,
+    Profile
 )
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
@@ -37,12 +30,4 @@ class UserModelAdmin(BaseUserAdmin):
 
 # Register your models here.
 admin.site.register(User, UserModelAdmin)
-admin.site.register(Agent)
 admin.site.register(Profile)
-admin.site.register(Function)
-admin.site.register(Assignment)
-admin.site.register(Rate)
-admin.site.register(Station)
-admin.site.register(Usage)
-admin.site.register(Buy_Mode)
-

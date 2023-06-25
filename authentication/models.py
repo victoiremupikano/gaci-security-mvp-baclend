@@ -81,23 +81,6 @@ class User(AbstractBaseUser):
     def __str__(self):
         return f"User {self.email}"
 
-# Agent Model
-class Agent(models.Model):
-    user=models.ForeignKey(User, on_delete=models.PROTECT) # utilisateur qui fait l'operation
-    email = models.EmailField(
-        verbose_name='Email',
-        max_length=255,
-        unique=True,
-    )
-    names=models.CharField(max_length=200)
-    is_active=models.BooleanField(default=True)
-    phone_number=PhoneNumberField(unique=True,null=False,blank=False)
-    date_add=models.DateTimeField(auto_now_add=True)
-    date_update=models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"Agent {self.names}"
-
 # Profile User Model
 class Profile(models.Model):
 
@@ -107,8 +90,7 @@ class Profile(models.Model):
         ('AUTRES', 'autres'),
     )
 
-    user=models.ForeignKey(User, on_delete=models.PROTECT) # utilisateur qui fait l'operation
-    agent=models.ForeignKey(Agent, on_delete=models.PROTECT)
+    user=models.ForeignKey(User, on_delete=models.PROTECT)
     kind=models.CharField(max_length=25, choices=KIND)
     adress=models.CharField(max_length=255, null=True, blank=True)
     picture=models.ImageField(upload_to='Images/Profile', max_length=255, null=True, blank=True)
@@ -116,70 +98,4 @@ class Profile(models.Model):
     date_update=models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Profile {self.agent.names}"
-
-# Function User Model
-class Function(models.Model):
-    user=models.ForeignKey(User, on_delete=models.PROTECT) # utilisateur qui fait l'operation
-    wording=models.CharField(max_length=255, unique=True, null=False, blank=False)
-    date_add=models.DateTimeField(auto_now_add=True)
-    date_update=models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"Function {self.wording}"
-
-# Assignment User Model
-class Assignment(models.Model):
-    user=models.ForeignKey(User, on_delete=models.PROTECT) # utilisateur qui fait l'operation
-    agent=models.ForeignKey(Agent, on_delete=models.PROTECT)
-    function=models.ForeignKey(Function, on_delete=models.PROTECT)
-    date_start=models.DateTimeField()
-    date_end=models.DateTimeField()
-    date_add=models.DateTimeField(auto_now_add=True)
-    date_update=models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"Assignment {self.agent.names}"
-
-# Rate Model, taux des lotisseurs
-class Rate(models.Model):
-    user=models.ForeignKey(User, on_delete=models.PROTECT) # utilisateur qui fait l'operation
-    value=models.DecimalField(max_digits=13, decimal_places=4, null=False)
-    date_start=models.DateTimeField()
-    date_end=models.DateTimeField()
-    date_add=models.DateTimeField(auto_now_add=True)
-    date_update=models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"Rate {self.value}"
-
-# Station Model
-class Station(models.Model):
-    user=models.ForeignKey(User, on_delete=models.PROTECT) # utilisateur qui fait l'operation
-    wording=models.CharField(max_length=255, unique=True, null=False, blank=False)
-    date_add=models.DateTimeField(auto_now_add=True)
-    date_update=models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"Station {self.wording}"
-
-# Usage Model
-class Usage(models.Model):
-    user=models.ForeignKey(User, on_delete=models.PROTECT) # utilisateur qui fait l'operation
-    wording=models.CharField(max_length=255, unique=True, null=False, blank=False)
-    date_add=models.DateTimeField(auto_now_add=True)
-    date_update=models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"Usage {self.wording}"
-
-# Buy_Mode Model
-class Buy_Mode(models.Model):
-    user=models.ForeignKey(User, on_delete=models.PROTECT) # utilisateur qui fait l'operation
-    wording=models.CharField(max_length=255, unique=True, null=False, blank=False)
-    date_add=models.DateTimeField(auto_now_add=True)
-    date_update=models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return f"Buy_Mode {self.wording}"
-
+        return f"Profile {self.user.names}"
