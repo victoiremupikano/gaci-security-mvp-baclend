@@ -26,6 +26,7 @@ import uuid
 from base64 import b64decode
 from django.core.files.base import ContentFile
 from gaci_security_api.pagination import NoLimitResultsPagination
+from gaci_security_api.mixins import QSFilterWithByUserLogged
 
 # json
 from django.core import serializers
@@ -208,6 +209,31 @@ class UserListView(
 
 
 # Starting Profile
+# Lister un seul enregistrement sur base de son user_id
+class ProfileUserIdDetailView(generics.RetrieveAPIView):
+
+    renderer_classes = [UserRenderer] # le rendu de la vue
+
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
+    
+    lookup_field = 'user_id'
+
+class ProfileUserLoggedListView(
+    QSFilterWithByUserLogged,
+    generics.ListCreateAPIView):
+
+    renderer_classes = [UserRenderer] # le rendu de la vue
+    # on l'authentication
+    authentication_classes = [JWTAuthentication]
+    # on gere les permissions pour cette view (acces, ...)
+    permission_classes = [permissions.IsAuthenticated]
+
+    # gestion de page
+    # pagination_class = NoLimitResultsPagination  
+    
+    queryset = Profile.objects.all()
+    serializer_class = ProfileSerializer
 # Lister une seul enregistrement
 class ProfileDetailView(generics.RetrieveAPIView):
 
