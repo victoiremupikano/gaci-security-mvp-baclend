@@ -2,7 +2,6 @@ import django
 from rest_framework.response import Response
 from rest_framework import status, generics, permissions
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework import pagination
 from rest_framework.views import APIView
 from . serializers import (
     SendPasswordResetEmailSerializer, 
@@ -26,7 +25,7 @@ import uuid
 from base64 import b64decode
 from django.core.files.base import ContentFile
 from gaci_security_api.pagination import NoLimitResultsPagination
-from gaci_security_api.mixins import QSFilterWithByUserLogged
+# from .. gaci_security_api.mixins import QSFilterWithByUserLogged
 
 # json
 from django.core import serializers
