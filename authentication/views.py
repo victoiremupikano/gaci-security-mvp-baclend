@@ -25,7 +25,7 @@ import uuid
 from base64 import b64decode
 from django.core.files.base import ContentFile
 from gaci_security_api.pagination import NoLimitResultsPagination
-from gaci_security_api.mixins import QSFilterWithByUserLogged
+from .mixins import QSFilterWithByUserLogged
 
 # json
 from django.core import serializers
