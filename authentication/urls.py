@@ -19,17 +19,7 @@ from . views import (
     ProfileUserLoggedListView, 
     ProfileListCreateView, 
     ProfileUpdateView, 
-    ProfileDeleteView,
-    # entreprize
-    EntreprizeDetailView,
-    EntreprizeListCreateView,
-    EntreprizeUpdateView,
-    EntreprizeDeleteView,
-    # Assignment
-    AssignmentDetailView,
-    AssignmentListCreateView,
-    AssignmentUpdateView,
-    AssignmentDeleteView
+    ProfileDeleteView
 )
 # import du jwt pour la gestion de token
 from rest_framework_simplejwt.views import (
@@ -59,54 +49,4 @@ urlpatterns = [
     path('profile-list-create/', ProfileListCreateView.as_view(), name='profile-list-create'),
     path('profile-update/<int:pk>/', ProfileUpdateView.as_view(), name='profile-update'),
     path('profile-delete/<int:pk>/', ProfileDeleteView.as_view(), name='profile-delete'),
-    # function
-    path('function-detail/<int:pk>/', FunctionDetailView.as_view(), name='function-detail'),
-    path('function-list-all/', FunctionListView.as_view(), name='function-list-all'),
-    path('function-list-create/', FunctionListCreateView.as_view(), name='function-list-create'),
-    path('function-update/<int:pk>/', FunctionUpdateView.as_view(), name='function-update'),
-    path('function-delete/<int:pk>/', FunctionDeleteView.as_view(), name='function-delete'),
-    # assignment
-    path('assignment-detail/<int:pk>/', AssignmentDetailView.as_view(), name='assignment-detail'),
-    path('assignment-detail-id-agent/<int:agent_id>/', AssignmentDetailIdAgentView.as_view(), name='assignment-detail-id-agent'),
-    path('assignment-list/', AssignmentListView.as_view(), name='assignment-list'),
-    path('assignment-list-create/', AssignmentListCreateView.as_view(), name='assignment-list-create'),
-    path('assignment-update/<int:pk>/', AssignmentUpdateView.as_view(), name='assignment-update'),
-    path('assignment-delete/<int:pk>/', AssignmentDeleteView.as_view(), name='assignment-delete'),
-    # rate
-    path('rate-detail/<int:pk>/', RateDetailView.as_view(), name='rate-detail'),
-    path('rate-list-all/', RateListView.as_view(), name='rate-list-all'),
-    path('rate-list-create/', RateListCreateView.as_view(), name='rate-list-create'),
-    path('rate-update/<int:pk>/', RateUpdateView.as_view(), name='rate-update'),
-    path('rate-delete/<int:pk>/', RateDeleteView.as_view(), name='rate-delete'),
-    # station
-    path('station-detail/<int:pk>/', StationDetailView.as_view(), name='station-detail'),
-    path('station-list-all/', StationListView.as_view(), name='station-list-all'),
-    path('station-list-create/', StationListCreateView.as_view(), name='station-list-create'),
-    path('station-update/<int:pk>/', StationUpdateView.as_view(), name='station-update'),
-    path('station-delete/<int:pk>/', StationDeleteView.as_view(), name='station-delete'),
-    # usage
-    path('usage-detail/<int:pk>/', UsageDetailView.as_view(), name='usage-detail'),
-    path('usage-list-all/', UsageListView.as_view(), name='usage-list-all'),
-    path('usage-list-create/', UsageListCreateView.as_view(), name='usage-list-create'),
-    path('usage-update/<int:pk>/', UsageUpdateView.as_view(), name='usage-update'),
-    path('usage-delete/<int:pk>/', UsageDeleteView.as_view(), name='usage-delete'),
-    # buy-mode
-    path('buy-mode-detail/<int:pk>/', Buy_ModeDetailView.as_view(), name='buy-mode-detail'),
-    path('buy-mode-list-all/', Buy_ModeListView.as_view(), name='buy-mode-list-all'),
-    path('buy-mode-list-create/', Buy_ModeListCreateView.as_view(), name='buy-mode-list-create'),
-    path('buy-mode-update/<int:pk>/', Buy_ModeUpdateView.as_view(), name='buy-mode-update'),
-    path('buy-mode-delete/<int:pk>/', Buy_ModeDeleteView.as_view(), name='buy-mode-delete'),
-
-    # les lien pour les donnes des rapport
-
-    # 1.liste de tous les utilisateur --> auth line 70
-    # 2.un seul utilisateur --> auth line 71
-    # 3.liste de tous les agents reconnues actifs 
-    path('agent-list-all-actif/', AgentListActifView.as_view(), name='agent-list-all-actif'),
-    # 4.liste de tous les agents reconnues non actifs 
-    path('agent-list-all-no-actif/', AgentListNoActifView.as_view(), name='agent-list-all-no-actif'),
-    # 5.liste de tous les agents chacun avec son dossier complet (fucntion assigner) --> auth line 100
-    # 6.un seul agent avec son dossier complet (fucntion assigner) --> auth line 99
-    # 24.lister tous les taux lier au salaire d'un agent par rapport aux parcels lotis
-    path('rate-by-agent-allot-list-all/<int:pk>/<int:station_id>/', RateListView.as_view(), name='rate-by-agent-allot-list-all'),
 ]
