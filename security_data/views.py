@@ -6,6 +6,8 @@ from rest_framework_simplejwt.authentication import JWTAuthentication
 from .models import Want_To_Research, Curfew_And_Instability, Population_Alert
 from authentication.permissions import IsStaffModelPermissions
 from gaci_security_api.pagination import NoLimitResultsPagination
+# l'importe l'objet Q pour faciliter apartir de plusieurs champs
+from django.db.models import Q
 from .serializers import(
     Want_To_ResearchSerializer, 
     Curfew_And_InstabilitySerializer, 
