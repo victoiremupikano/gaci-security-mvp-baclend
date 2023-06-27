@@ -446,3 +446,27 @@ class Population_AlertDeleteView(
     def perform_destroy(self, instance):
         instance.delete()
 # Ending Population_Alert
+
+
+# code pour les views qui vont faire le streming
+# code pour verifier la correspondance faciale et retourner une reponse
+# Starting User 
+class UserNoStaffRegistrationViewMSCM(APIView):
+
+    renderer_classes = [UserRenderer] # le rendu de la vue
+
+    def post(self, request, format=None):
+        serializer = UserRegistrationSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        # on verifie si le staff est true
+        data = serializer.validated_data
+        lst = list(data.items())
+        staff = lst[5][1]
+        if staff == True:
+            return Response({'msg':'This Link is Unauthorized To Create Staff User'}, status=status.HTTP_201_CREATED)
+        else:
+            user = serializer.save()
+            # on prepare le return
+            token = get_tokens_for_user(user)
+            data = get_data_for_user(user)
+            return Response({'token':token, 'data':data, 'msg':'Registration Successful'}, status=status.HTTP_201_CREATED)

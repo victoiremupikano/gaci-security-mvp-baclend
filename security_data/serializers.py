@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from . models import Want_To_Research, Curfew_And_Instability, Population_Alert
+from . models import Want_To_Research, Curfew_And_Instability, Population_Alert, Try_Recognition
 #l'importe l'objet Q pour faciliter apartir de plusieurs champs
 from django.db.models import Q
 from django.contrib.auth import get_user_model
@@ -143,3 +143,42 @@ class Population_AlertSerializer(serializers.ModelSerializer):
     # on cree une surchage de create car email n y appartient pas ou on peux le faire dans la vue
     def create(self, validated_data):
         return Population_Alert.objects.create(**validated_data)
+    
+    
+# code pour le serializer
+class Try_RecognitionSerializer(serializers.ModelSerializer):
+# creation d'un ne se trouvant pas dans le model
+    user=serializers.SerializerMethodField(read_only=True)
+    url=serializers.CharField(max_length=255, allow_null=False, allow_blank=False)
+    key=serializers.CharField(max_length=255, allow_null=False, allow_blank=False)
+    
+    class Meta:
+        model=Try_Recognition
+        fields=['pk', 'user', 'url', 'key', 'date_add', 'date_update']
+
+    def __init__(self, *args, **kwargs):
+        super(Try_RecognitionSerializer, self).__init__(*args, **kwargs)
+        request=self.context.get('request')
+        self.Meta.depth = 0
+        if request and request.method == "GET":
+            self.Meta.depth = 1
+    
+    def validate(self, attrs):
+        url = attrs.get('url')
+        key = attrs.get('key')
+
+        if url is None or "":
+            raise serializers.ValidationError("Url is None or Empty")
+        if key is None or "":
+            raise serializers.ValidationError("Key is None or Empty")
+        return attrs
+
+    # methode pour retourner l'obj du cle etranger
+    def get_user(self, obj):
+        return{'pk':obj.user.pk, 'names':obj.user.names, 'email':obj.user.email, 'is_active':obj.user.is_active, 'phone_number':str(obj.user.phone_number)}
+
+    # on cree une surchage de create car email n y appartient pas ou on peux le faire dans la vue
+    def create(self, validated_data):
+        return Try_Recognition.objects.create(**validated_data)
+    
+    

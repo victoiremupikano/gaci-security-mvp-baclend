@@ -13,3 +13,9 @@ pillow==2.2.1
 boto3==1.22.9
 botocore>=1.25.9
 s3transfer==0.5.2
+
+# pour opencv
+face-recognition==1.3.0
+opencv-python==4.7.0.72
+numpy==1.25.0
+dlib==19.24.2
