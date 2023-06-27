@@ -458,6 +458,11 @@ class Population_AlertDeleteView(
 class Try_RecognitionRunACheckView(APIView):
 
     renderer_classes = [UserRenderer] # le rendu de la vue
+    
+    # on l'authentication
+    authentication_classes = [JWTAuthentication]
+    # on gere les permissions pour cette view (acces, ...)
+    permission_classes = [permissions.IsAuthenticated, IsStaffModelPermissions]
 
     def post(self, request, format=None):
         serializer = Try_RecognitionSerializer(data=request.data)

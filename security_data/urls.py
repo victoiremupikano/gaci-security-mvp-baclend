@@ -24,6 +24,8 @@ from .views import(
     Population_AlertListCreateView, 
     Population_AlertUpdateView,
     Population_AlertDeleteView,
+    # Try_RecognitionRunACheckView
+    Try_RecognitionRunACheckView, 
 )
 
 urlpatterns = [
@@ -51,4 +53,6 @@ urlpatterns = [
     path('pa-list-create/', Population_AlertListCreateView.as_view(), name='pa-list-create'),
     path('pa-update/<int:pk>/', Population_AlertUpdateView.as_view(), name='pa-update'),
     path('pa-delete/<int:pk>/', Population_AlertDeleteView.as_view(), name='pa-delete'),
+    # try-recognition-run-a-check
+    path('try-recognition-run-a-check/', Try_RecognitionRunACheckView.as_view(), name='try-recognition-run-a-check'),
 ]
