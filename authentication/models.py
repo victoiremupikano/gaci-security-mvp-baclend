@@ -1,6 +1,13 @@
+import os
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from phonenumber_field.modelfields import PhoneNumberField
+
+# def pour mettre le nom de l'user sur l'image
+def get_image_path(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (instance.user.names, ext)
+    return os.path.join('Images/Datasource/', filename)
 
 
 # Create your models here.
@@ -93,7 +100,7 @@ class Profile(models.Model):
     user=models.ForeignKey(User, on_delete=models.PROTECT)
     kind=models.CharField(max_length=25, choices=KIND)
     adress=models.CharField(max_length=255, null=True, blank=True)
-    picture=models.ImageField(upload_to='Images/Profile', max_length=255, null=True, blank=True)
+    picture=models.ImageField(upload_to=get_image_path, max_length=255, null=True, blank=True)
     date_add=models.DateTimeField(auto_now_add=True)
     date_update=models.DateTimeField(auto_now=True)
 
