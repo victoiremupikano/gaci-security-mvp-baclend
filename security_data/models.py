@@ -1,8 +1,20 @@
+import os
 from django.db import models
 # on import le models User de django de facon professionnel
 from django.contrib.auth import get_user_model
 
 User = get_user_model()
+
+# def pour mettre le nom de l'user sur l'image
+def get_image_path_wtr(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (instance.user.names + "_wtr", ext)
+    return os.path.join('Images/Datasource/', filename)
+
+def get_image_path_cai(instance, filename):
+    ext = filename.split('.')[-1]
+    filename = "%s.%s" % (instance.user.names + "_cai", ext)
+    return os.path.join('Images/Datasource/', filename)
 
 
 # Create your models here.
@@ -21,7 +33,7 @@ class Want_To_Research(models.Model):
     is_finish=models.BooleanField(default=False)
     is_cancel=models.BooleanField(default=False)
     reason=models.CharField(max_length=255, null=True, blank=True)
-    picture=models.ImageField(upload_to='Images/Datasource', max_length=255, null=True, blank=True)
+    picture=models.ImageField(upload_to=get_image_path_wtr, max_length=255, null=True, blank=True)
     date_add=models.DateTimeField(auto_now_add=True)
     date_update=models.DateTimeField(auto_now=True)
 
@@ -36,7 +48,7 @@ class Curfew_And_Instability(models.Model):
     latittude=models.CharField(max_length=255, null=False, blank=False)
     is_finish=models.BooleanField(default=False)
     is_cancel=models.BooleanField(default=False)  
-    picture=models.ImageField(upload_to='Images/Curfew_And_Instability', max_length=255, null=True, blank=True)
+    picture=models.ImageField(upload_to=get_image_path_cai, max_length=255, null=True, blank=True)
     date_add=models.DateTimeField(auto_now_add=True)
     date_update=models.DateTimeField(auto_now=True)
 

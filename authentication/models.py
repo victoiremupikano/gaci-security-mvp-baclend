@@ -6,7 +6,7 @@ from phonenumber_field.modelfields import PhoneNumberField
 # def pour mettre le nom de l'user sur l'image
 def get_image_path(instance, filename):
     ext = filename.split('.')[-1]
-    filename = "%s.%s" % (instance.user.names, ext)
+    filename = "%s.%s" % (instance.user.names + "_profile", ext)
     return os.path.join('Images/Datasource/', filename)
 
 
