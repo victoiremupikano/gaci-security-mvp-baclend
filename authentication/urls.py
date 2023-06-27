@@ -10,8 +10,8 @@ from . views import (
     UserChangePasswordView, 
     UserChangeStatusView,
     UserLoginView, 
-    UserNoStaffRegistrationViewMSCM, 
-    UserStaffRegistrationViewMSCM, 
+    UserNoStaffRegistrationView, 
+    UserStaffRegistrationView, 
     UserPasswordResetView, 
     # Auth Profile
     ProfileDetailView,
@@ -31,8 +31,8 @@ urlpatterns = [
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('token/verify/', CustomTokenVerifyView.as_view(), name='token_verify'),
     # accounts
-    path('no-staff-register-mscm/', UserNoStaffRegistrationViewMSCM.as_view(), name='no-staff-register-mscm'),
-    path('staff-register-mscm/', UserStaffRegistrationViewMSCM.as_view(), name='staff-register-mscm'),
+    path('no-staff-register-mscm/', UserNoStaffRegistrationView.as_view(), name='no-staff-register-mscm'),
+    path('staff-register-mscm/', UserStaffRegistrationView.as_view(), name='staff-register-mscm'),
     path('login/', UserLoginView.as_view(), name='login'),
     path('logout/', UserLogoutView.as_view(), name='logout'),
     path('changepassword/', UserChangePasswordView.as_view(), name='changepassword'),

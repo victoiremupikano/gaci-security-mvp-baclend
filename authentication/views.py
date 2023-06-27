@@ -66,7 +66,7 @@ class CustomTokenVerifyView(TokenVerifyView):
     serializer_class = CustomTokenVerifySerializer
 
 # Starting User 
-class UserNoStaffRegistrationViewMSCM(APIView):
+class UserNoStaffRegistrationView(APIView):
 
     renderer_classes = [UserRenderer] # le rendu de la vue
 
@@ -86,7 +86,7 @@ class UserNoStaffRegistrationViewMSCM(APIView):
             data = get_data_for_user(user)
             return Response({'token':token, 'data':data, 'msg':'Registration Successful'}, status=status.HTTP_201_CREATED)
 
-class UserStaffRegistrationViewMSCM(APIView):
+class UserStaffRegistrationView(APIView):
 
     renderer_classes = [UserRenderer] # le rendu de la vue
 

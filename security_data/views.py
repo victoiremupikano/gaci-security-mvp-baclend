@@ -3,7 +3,8 @@ from authentication.renderers import UserRenderer
 from rest_framework.response import Response
 from rest_framework import status, generics, permissions
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .models import Want_To_Research, Curfew_And_Instability, Population_Alert
+from .models import Want_To_Research, Curfew_And_Instability, Population_Alert, Try_Recognition
+from rest_framework.views import APIView
 from authentication.permissions import IsStaffModelPermissions
 from gaci_security_api.pagination import NoLimitResultsPagination
 # l'importe l'objet Q pour faciliter apartir de plusieurs champs
@@ -11,13 +12,16 @@ from django.db.models import Q
 from .serializers import(
     Want_To_ResearchSerializer, 
     Curfew_And_InstabilitySerializer, 
-    Population_AlertSerializer
+    Population_AlertSerializer,
+    Try_RecognitionSerializer
 )
 from django.contrib.auth import get_user_model
 # UserQuerySetMixin permet de filter les resultats sur base des permissions
 from authentication.mixins import(
     QSFilterWithByUserLogged
 )
+# on importe les fx du opencv
+from opencv_algorithm.main_sf_video import throw_acknowledgement 
 
 User = get_user_model()
 
@@ -451,22 +455,21 @@ class Population_AlertDeleteView(
 # code pour les views qui vont faire le streming
 # code pour verifier la correspondance faciale et retourner une reponse
 # Starting User 
-class UserNoStaffRegistrationViewMSCM(APIView):
+class Try_RecognitionRunACheckView(APIView):
 
     renderer_classes = [UserRenderer] # le rendu de la vue
 
     def post(self, request, format=None):
-        serializer = UserRegistrationSerializer(data=request.data)
+        serializer = Try_RecognitionSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         # on verifie si le staff est true
         data = serializer.validated_data
-        lst = list(data.items())
-        staff = lst[5][1]
-        if staff == True:
-            return Response({'msg':'This Link is Unauthorized To Create Staff User'}, status=status.HTTP_201_CREATED)
+        if data is None:
+            return Response({'msg':'Erreur de validation'}, status=status.HTTP_201_CREATED)
         else:
-            user = serializer.save()
+            obj = serializer.save()
             # on prepare le return
-            token = get_tokens_for_user(user)
-            data = get_data_for_user(user)
-            return Response({'token':token, 'data':data, 'msg':'Registration Successful'}, status=status.HTTP_201_CREATED)
+            # on demarrer la verification sur le serveur pour voire la correspondace entre les images du client et ceux du serveur
+            results = throw_acknowledgement(obj.url, obj.key)
+            print(results) 
+            return Response({'data':results, 'msg':'Fin de check'}, status=status.HTTP_201_CREATED)
