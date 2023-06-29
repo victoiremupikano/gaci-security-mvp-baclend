@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from . models import Want_To_Research, Curfew_And_Instability, Population_Alert, Try_Recognition
+from . models import Want_To_Research, Curfew_And_Instability, Population_Alert
 #l'importe l'objet Q pour faciliter apartir de plusieurs champs
 from django.db.models import Q
 from django.contrib.auth import get_user_model

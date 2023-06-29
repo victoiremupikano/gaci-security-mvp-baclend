@@ -3,7 +3,7 @@ from authentication.renderers import UserRenderer
 from rest_framework.response import Response
 from rest_framework import status, generics, permissions
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .models import Want_To_Research, Curfew_And_Instability, Population_Alert, Try_Recognition
+from .models import Want_To_Research, Curfew_And_Instability, Population_Alert
 from rest_framework.views import APIView
 from authentication.permissions import IsStaffModelPermissions
 from gaci_security_api.pagination import NoLimitResultsPagination
@@ -12,8 +12,7 @@ from django.db.models import Q
 from .serializers import(
     Want_To_ResearchSerializer, 
     Curfew_And_InstabilitySerializer, 
-    Population_AlertSerializer,
-    Try_RecognitionSerializer
+    Population_AlertSerializer
 )
 from django.contrib.auth import get_user_model
 # UserQuerySetMixin permet de filter les resultats sur base des permissions
@@ -460,65 +459,51 @@ class Try_RecognitionRunACheckListCreateView(APIView):
     renderer_classes = [UserRenderer] # le rendu de la vue
 
     def post(self, request, format=None):
+        # var portant le nombre de tentative de reconnaisance
+        iterations = 0
+        results = '' # recevrant toute les chaines de reponses de la reconnaissance
         data=request.data
-        print(data)
         if len(data) <= 0:
-            return Response({'msg':'Data is Empty'}, status=status.HTTP_201_CREATED)
+            return Response({'msg':'Url is not Null or Empty'}, status=status.HTTP_201_CREATED)
         else:
-            print(data['url'])      
-            return Response({'msg':'Data is Not Empty...'}, status=status.HTTP_201_CREATED)
+            # Encode faces from a folder
+            sfr = SimpleFacerec()
+            sfr.load_encoding_images("media/Images/Datasource/")
 
-# class Try_RecognitionRunACheckListCreateView(
-#     generics.ListCreateAPIView):
-
-#     renderer_classes = [UserRenderer] # le rendu de la vue
-#     # on l'authentication
-#     authentication_classes = [JWTAuthentication]
-#     # on gere les permissions pour cette view (acces, ...)
-#     permission_classes = [permissions.IsAuthenticated]
-
-#     queryset = Try_Recognition.objects.all()
-#     serializer_class = Try_RecognitionSerializer
-
-#     # gerer
-#     def perform_create(self, serializer):
-#         # on recuper l'user connecter ou authentifier
-#         user = self.request.user
-#         serializer.save(user=user)
-        
-        
-# def detectWithWebcam(request):
-#     # Encode faces from a folder
-#     sfr = SimpleFacerec()
-#     sfr.load_encoding_images("images/")
-
-#     cap = cv2.VideoCapture(0)
-#     # url = "http://192.168.43.162:8080/video"
-#     # cap.open()
-
-#     while True:
-#         ret, frame = cap.read()
-
-#         # Detection des faces
-#         face_locations, face_names = sfr.detect_known_faces(frame)
-#         for face_loc, name in zip(face_locations, face_names):
-#             y1, x2, y2, x1 = face_loc[0], face_loc[1], face_loc[2], face_loc[3]
-
-#             cv2.putText(frame, name,(x1, y1 - 10), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 200), 2)
-#             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 200), 4)
-
-#         cv2.imshow("Frame", frame)
-        
-#         # verification de correspondance
-#         if len(face_names) == 0 :
-#             print('Pas des correspondance trouvé...')
-#         else:
-#             print('Correspondance trouvé...')
+            cap = cv2.VideoCapture(0)
             
-#         key = cv2.waitKey(1)
-#         # on arret le streaming en appuyant sur 27
-#         if key == 27:
-#             break
+            # code pour les cameras sur reseau
+            # url = f"http://{data['url']}/video"
+            # cap.open(url)
 
-#     cap.release()
-#     cv2.destroyAllWindows()
+            while True:
+                iterations = iterations + 1
+                ret, frame = cap.read()
+
+                # Detection des faces
+                face_locations, face_names = sfr.detect_known_faces(frame)
+                for face_loc, name in zip(face_locations, face_names):
+                    y1, x2, y2, x1 = face_loc[0], face_loc[1], face_loc[2], face_loc[3]
+
+                    cv2.putText(frame, name,(x1, y1 - 10), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 200), 2)
+                    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 200), 4)
+
+                cv2.imshow("Frame", frame)
+                
+                # verification de correspondance
+                if len(face_names) <= 0 :
+                    results = results + f'Pas des correspondance trouvé {str(face_names)}...\n'
+                    print(f'Pas des correspondance trouvé {str(face_names)}...')
+                    
+                else:
+                    results = results + f'Correspondance trouvé {str(face_names)}...\n'
+                    print(f'Correspondance trouvé {str(face_names)}...')
+                                        
+                cv2.waitKey(1)
+                # on arret le streaming....
+                if iterations == 360:
+                    break
+
+            cap.release()
+            cv2.destroyAllWindows()   
+            return Response({'msg':'Fin de l\'iterration', 'results': results}, status=status.HTTP_201_CREATED)
