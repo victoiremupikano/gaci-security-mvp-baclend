@@ -56,7 +56,7 @@ class Curfew_And_Instability(models.Model):
         return f"Curfew_And_Instability {self.reason}"
     
 # 
-# population alert(alrte de la population)
+# population alert(alerte de la population)
 class Population_Alert(models.Model):
     user=models.ForeignKey(User, on_delete=models.PROTECT)
     reason_issued=models.CharField(max_length=255, null=False, blank=False)
@@ -70,3 +70,15 @@ class Population_Alert(models.Model):
 
     def __str__(self):
         return f"Population_Alert {self.reason_issued}"
+ 
+# le tentative de reconnaissance   
+class Recognized(models.Model):
+    wtr=models.ForeignKey(Want_To_Research, on_delete=models.PROTECT)
+    names=models.CharField(max_length=255, null=False, blank=False)
+    longitude=models.CharField(max_length=255, null=False, blank=False)
+    latittude=models.CharField(max_length=255, null=False, blank=False)
+    date_add=models.DateTimeField(auto_now_add=True)
+    date_update=models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"Recognized {self.names}"
