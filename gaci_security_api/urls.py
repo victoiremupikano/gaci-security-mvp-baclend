@@ -22,6 +22,7 @@ from django.conf.urls.static import static
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/auth/", include("authentication.urls")),
+    path("api/security-data/", include("security_data.urls")),
 ]
 
 #on charger l'url vers les medias

@@ -20,8 +20,8 @@ from django.contrib.auth import get_user_model
 from authentication.mixins import(
     QSFilterWithByUserLogged
 )
-# on importe les fx du opencv
-from opencv_algorithm.main_sf_video import throw_acknowledgement 
+import cv2
+from .simple_facerec import SimpleFacerec
 
 User = get_user_model()
 
@@ -454,27 +454,71 @@ class Population_AlertDeleteView(
 
 # code pour les views qui vont faire le streming
 # code pour verifier la correspondance faciale et retourner une reponse
-# Starting User 
-class Try_RecognitionRunACheckView(APIView):
+# lister etcreer au meme moment
+class Try_RecognitionRunACheckListCreateView(APIView):
 
     renderer_classes = [UserRenderer] # le rendu de la vue
-    
-    # on l'authentication
-    authentication_classes = [JWTAuthentication]
-    # on gere les permissions pour cette view (acces, ...)
-    permission_classes = [permissions.IsAuthenticated, IsStaffModelPermissions]
 
     def post(self, request, format=None):
-        serializer = Try_RecognitionSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        # on verifie si le staff est true
-        data = serializer.validated_data
-        if data is None:
-            return Response({'msg':'Erreur de validation'}, status=status.HTTP_201_CREATED)
+        data=request.data
+        print(data)
+        if len(data) <= 0:
+            return Response({'msg':'Data is Empty'}, status=status.HTTP_201_CREATED)
         else:
-            obj = serializer.save()
-            # on prepare le return
-            # on demarrer la verification sur le serveur pour voire la correspondace entre les images du client et ceux du serveur
-            results = throw_acknowledgement(obj.url, obj.key)
-            print(results) 
-            return Response({'data':results, 'msg':'Fin de check'}, status=status.HTTP_201_CREATED)
+            print(data['url'])      
+            return Response({'msg':'Data is Not Empty...'}, status=status.HTTP_201_CREATED)
+
+# class Try_RecognitionRunACheckListCreateView(
+#     generics.ListCreateAPIView):
+
+#     renderer_classes = [UserRenderer] # le rendu de la vue
+#     # on l'authentication
+#     authentication_classes = [JWTAuthentication]
+#     # on gere les permissions pour cette view (acces, ...)
+#     permission_classes = [permissions.IsAuthenticated]
+
+#     queryset = Try_Recognition.objects.all()
+#     serializer_class = Try_RecognitionSerializer
+
+#     # gerer
+#     def perform_create(self, serializer):
+#         # on recuper l'user connecter ou authentifier
+#         user = self.request.user
+#         serializer.save(user=user)
+        
+        
+# def detectWithWebcam(request):
+#     # Encode faces from a folder
+#     sfr = SimpleFacerec()
+#     sfr.load_encoding_images("images/")
+
+#     cap = cv2.VideoCapture(0)
+#     # url = "http://192.168.43.162:8080/video"
+#     # cap.open()
+
+#     while True:
+#         ret, frame = cap.read()
+
+#         # Detection des faces
+#         face_locations, face_names = sfr.detect_known_faces(frame)
+#         for face_loc, name in zip(face_locations, face_names):
+#             y1, x2, y2, x1 = face_loc[0], face_loc[1], face_loc[2], face_loc[3]
+
+#             cv2.putText(frame, name,(x1, y1 - 10), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 200), 2)
+#             cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 200), 4)
+
+#         cv2.imshow("Frame", frame)
+        
+#         # verification de correspondance
+#         if len(face_names) == 0 :
+#             print('Pas des correspondance trouvé...')
+#         else:
+#             print('Correspondance trouvé...')
+            
+#         key = cv2.waitKey(1)
+#         # on arret le streaming en appuyant sur 27
+#         if key == 27:
+#             break
+
+#     cap.release()
+#     cv2.destroyAllWindows()
