@@ -9,12 +9,12 @@ User = get_user_model()
 def get_image_path_wtr(instance, filename):
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (instance.user.names + "_wtr", ext)
-    return os.path.join('Images/Datasource/', filename)
+    return os.path.join('Images/Datasource/Wtr/', filename)
 
 def get_image_path_cai(instance, filename):
     ext = filename.split('.')[-1]
     filename = "%s.%s" % (instance.user.names + "_cai", ext)
-    return os.path.join('Images/Datasource/', filename)
+    return os.path.join('Images/Datasource/Cai/', filename)
 
 
 # Create your models here.
@@ -75,8 +75,8 @@ class Population_Alert(models.Model):
 class Recognized(models.Model):
     wtr=models.ForeignKey(Want_To_Research, on_delete=models.PROTECT)
     names=models.CharField(max_length=255, null=False, blank=False)
-    longitude=models.CharField(max_length=255, null=False, blank=False)
-    latittude=models.CharField(max_length=255, null=False, blank=False)
+    longitude=models.CharField(max_length=255, null=True, blank=True)
+    latittude=models.CharField(max_length=255, null=True, blank=True)
     date_add=models.DateTimeField(auto_now_add=True)
     date_update=models.DateTimeField(auto_now=True)
 

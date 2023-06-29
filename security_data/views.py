@@ -3,7 +3,7 @@ from authentication.renderers import UserRenderer
 from rest_framework.response import Response
 from rest_framework import status, generics, permissions
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from .models import Want_To_Research, Curfew_And_Instability, Population_Alert
+from .models import Want_To_Research, Curfew_And_Instability, Population_Alert, Recognized
 from rest_framework.views import APIView
 from authentication.permissions import IsStaffModelPermissions
 from gaci_security_api.pagination import NoLimitResultsPagination
@@ -466,44 +466,71 @@ class Try_RecognitionRunACheckListCreateView(APIView):
         if len(data) <= 0:
             return Response({'msg':'Url is not Null or Empty'}, status=status.HTTP_201_CREATED)
         else:
-            # Encode faces from a folder
-            sfr = SimpleFacerec()
-            sfr.load_encoding_images("media/Images/Datasource/")
-
-            cap = cv2.VideoCapture(0)
-            
-            # code pour les cameras sur reseau
-            # url = f"http://{data['url']}/video"
-            # cap.open(url)
-
-            while True:
-                iterations = iterations + 1
-                ret, frame = cap.read()
-
-                # Detection des faces
-                face_locations, face_names = sfr.detect_known_faces(frame)
-                for face_loc, name in zip(face_locations, face_names):
-                    y1, x2, y2, x1 = face_loc[0], face_loc[1], face_loc[2], face_loc[3]
-
-                    cv2.putText(frame, name,(x1, y1 - 10), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 200), 2)
-                    cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 200), 4)
-
-                cv2.imshow("Frame", frame)
-                
-                # verification de correspondance
-                if len(face_names) <= 0 :
-                    results = results + f'Pas des correspondance trouvé {str(face_names)}...\n'
-                    print(f'Pas des correspondance trouvé {str(face_names)}...')
+            # on recupere l'obj du wtr
+            wtr_exists = Want_To_Research.objects.filter(pk=data['id']).exists()
+            if not wtr_exists:
+                return Response({'msg':'Id is not Null or Empty'}, status=status.HTTP_201_CREATED)
+            else:
+                wtr = Want_To_Research.objects.get(pk=data['id'])
+                # le noms de correspondance trouver
+                names = ''
+                # on verifie si on reconnaisance ...
+                type = ''
+                if(data['type'] == 'wtr'):
+                    type = 'media/Images/Datasource/Wtr/'
+                elif(data['type'] == 'cai'):
+                    type = 'media/Images/Datasource/Cai/'
                     
-                else:
-                    results = results + f'Correspondance trouvé {str(face_names)}...\n'
-                    print(f'Correspondance trouvé {str(face_names)}...')
-                                        
-                cv2.waitKey(1)
-                # on arret le streaming....
-                if iterations == 360:
-                    break
+                # Encode faces from a folder
+                sfr = SimpleFacerec()
+                sfr.load_encoding_images(f"{type}")
 
-            cap.release()
-            cv2.destroyAllWindows()   
-            return Response({'msg':'Fin de l\'iterration', 'results': results}, status=status.HTTP_201_CREATED)
+                cap = cv2.VideoCapture(0)
+                
+                # code pour les cameras sur reseau
+                # url = f"http://{data['url']}/video"
+                # cap.open(url)
+
+                while True:
+                    iterations = iterations + 1
+                    ret, frame = cap.read()
+
+                    # Detection des faces
+                    face_locations, face_names = sfr.detect_known_faces(frame)
+                    for face_loc, name in zip(face_locations, face_names):
+                        y1, x2, y2, x1 = face_loc[0], face_loc[1], face_loc[2], face_loc[3]
+
+                        cv2.putText(frame, name,(x1, y1 - 10), cv2.FONT_HERSHEY_DUPLEX, 1, (0, 0, 200), 2)
+                        cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 0, 200), 4)
+
+                    cv2.imshow("Frame", frame)
+                    
+                    # verification de correspondance
+                    if len(face_names) <= 0 :
+                        results = results + f'Pas des correspondance trouvé {str(face_names)}...\n'
+                        print(f'Pas des correspondance trouvé {str(face_names)}...')
+                    else:
+                        names = str(face_names)
+                        results = results + f'Correspondance trouvé {str(face_names)}...\n'
+                        print(f'Correspondance trouvé {str(face_names)}...')
+                                            
+                    cv2.waitKey(1)
+                    # on arret le streaming....
+                    if iterations == 100:
+                        break
+
+                cap.release()
+                cv2.destroyAllWindows()   
+                
+                # Vérifier si la sous-chaine se trouve dans la chaine principale 
+                if "Correspondance trouvé" in results:
+                    print ('Sous-chaîne trouvée')
+                    # on enregistre
+                    obj = Recognized.objects.create(wtr=wtr, names=names, longitude=data['longitude'], latittude=data['latittude'])
+                    if obj is None:
+                        print('Obj is not Register')
+                    else:
+                        print('Obj is Register')
+                else:
+                    print('Sous-chaîne non trouvée')
+                return Response({'msg':'Fin de l\'iterration', 'results': results}, status=status.HTTP_201_CREATED)
