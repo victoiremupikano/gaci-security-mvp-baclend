@@ -516,7 +516,7 @@ class Try_RecognitionRunACheckListCreateView(APIView):
                                             
                     cv2.waitKey(1)
                     # on arret le streaming....
-                    if iterations == 100:
+                    if iterations == 200:
                         break
 
                 cap.release()
