@@ -2,6 +2,7 @@ import os
 from django.db import models
 # on import le models User de django de facon professionnel
 from django.contrib.auth import get_user_model
+from playsound import playsound
 
 User = get_user_model()
 
@@ -70,6 +71,12 @@ class Population_Alert(models.Model):
 
     def __str__(self):
         return f"Population_Alert {self.reason_issued}"
+    
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # on lance l'alerte
+        playsound('/media/victoire/DECAB33BCAB30F31/HDDH2/Projets/Web/Projet/django/GACI-S-API/backend/src/security_data/sirena_ambulanza.wav')
+
  
 # le tentative de reconnaissance   
 class Recognized(models.Model):

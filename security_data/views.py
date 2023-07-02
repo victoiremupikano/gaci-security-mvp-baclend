@@ -78,7 +78,7 @@ class Want_To_ResearchIsCancelListView(
     permission_classes = [permissions.IsAuthenticated]
 
     # gestion de page
-    pagination_class = NoLimitResultsPagination  
+    # pagination_class = NoLimitResultsPagination  
 
     queryset = Want_To_Research.objects.filter(is_cancel='1')
     serializer_class = Want_To_ResearchSerializer     
@@ -93,7 +93,7 @@ class Want_To_ResearchInProgressListView(
     permission_classes = [permissions.IsAuthenticated]
 
     # gestion de page
-    pagination_class = NoLimitResultsPagination  
+    # pagination_class = NoLimitResultsPagination  
 
     queryset = Want_To_Research.objects.filter(Q(is_finish='0') & Q(is_cancel='0'))
     serializer_class = Want_To_ResearchSerializer  
@@ -347,7 +347,7 @@ class Population_AlertIsFinishListView(
     permission_classes = [permissions.IsAuthenticated]
 
     # gestion de page
-    pagination_class = NoLimitResultsPagination  
+    # pagination_class = NoLimitResultsPagination  
 
     queryset = Population_Alert.objects.filter(is_finish='1')
     serializer_class = Population_AlertSerializer  
@@ -362,7 +362,7 @@ class Population_AlertIsCancelListView(
     permission_classes = [permissions.IsAuthenticated]
 
     # gestion de page
-    pagination_class = NoLimitResultsPagination  
+    # pagination_class = NoLimitResultsPagination  
 
     queryset = Population_Alert.objects.filter(is_cancel='1')
     serializer_class = Population_AlertSerializer     
@@ -377,7 +377,7 @@ class Population_AlertInProgressListView(
     permission_classes = [permissions.IsAuthenticated]
 
     # gestion de page
-    pagination_class = NoLimitResultsPagination  
+    # pagination_class = NoLimitResultsPagination  
 
     queryset = Population_Alert.objects.filter(Q(is_finish='0') & Q(is_cancel='0'))
     serializer_class = Population_AlertSerializer  
@@ -390,7 +390,7 @@ class Population_AlertListCreateView(
     # on l'authentication
     authentication_classes = [JWTAuthentication]
     # on gere les permissions pour cette view (acces, ...)
-    permission_classes = [permissions.IsAuthenticated, IsStaffModelPermissions]
+    permission_classes = [permissions.IsAuthenticated,]
 
     queryset = Population_Alert.objects.all()
     serializer_class = Population_AlertSerializer

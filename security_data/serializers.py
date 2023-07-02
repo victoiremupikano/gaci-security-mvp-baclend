@@ -23,7 +23,7 @@ class Want_To_ResearchSerializer(serializers.ModelSerializer):
    
     class Meta:
         model=Want_To_Research
-        fields=['pk', 'user', 'names', 'kind', 'is_finish', 'is_cancel', 'reason', 'picture', 'picture64', 'date_add', 'date_update']
+        fields=['pk', 'user', 'names', 'kind', 'reason', 'is_finish', 'is_cancel', 'picture', 'picture64', 'date_add', 'date_update']
     
     def __init__(self, *args, **kwargs):
         super(Want_To_ResearchSerializer, self).__init__(*args, **kwargs)
@@ -45,7 +45,7 @@ class Want_To_ResearchSerializer(serializers.ModelSerializer):
             # verfication
             names_exists = Want_To_Research.objects.filter(names=names).exists()
             if names_exists:
-                names_exists = Want_To_Research.objects.filter(Q(names=names) & Q(id=pk) & Q(is_finish='1')).exists()
+                names_exists = Want_To_Research.objects.filter(Q(names=names) & Q(id=pk)).exists()
                 if not names_exists:
                     raise serializers.ValidationError("Want_To_Research with Names Exists")
         return attrs
