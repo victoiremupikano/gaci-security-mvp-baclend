@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from . models import Want_To_Research, Curfew_And_Instability, Population_Alert
+from . models import Want_To_Research, Curfew_And_Instability, Population_Alert, Recognized
 #l'importe l'objet Q pour faciliter apartir de plusieurs champs
 from django.db.models import Q
 from django.contrib.auth import get_user_model
@@ -146,3 +146,29 @@ class Population_AlertSerializer(serializers.ModelSerializer):
     # on cree une surchage de create car email n y appartient pas ou on peux le faire dans la vue
     def create(self, validated_data):
         return Population_Alert.objects.create(**validated_data)
+    
+class RecognizedSerializer(serializers.ModelSerializer):
+# creation d'un ne se trouvant pas dans le model
+    wtr=serializers.SerializerMethodField(read_only=True)
+    names=serializers.CharField(max_length=255, allow_null=False, allow_blank=False)
+    longitude=serializers.CharField(max_length=255, allow_null=False, allow_blank=False)
+    latittude=serializers.CharField(max_length=255, allow_null=False, allow_blank=False)
+    
+    class Meta:
+        model=Recognized
+        fields=['pk', 'wtr', 'names', 'longitude', 'latittude', 'date_add', 'date_update']
+
+    def __init__(self, *args, **kwargs):
+        super(RecognizedSerializer, self).__init__(*args, **kwargs)
+        request=self.context.get('request')
+        self.Meta.depth = 0
+        if request and request.method == "GET":
+            self.Meta.depth = 1
+
+    # methode pour retourner l'obj du cle etranger
+    def get_wrt(self, obj):
+        return{'pk':obj.wtr.pk, 'names':obj.wtr.names, 'reason':obj.wtr.reason}
+
+    # on cree une surchage de create car email n y appartient pas ou on peux le faire dans la vue
+    def create(self, validated_data):
+        return Recognized.objects.create(**validated_data)

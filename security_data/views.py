@@ -10,6 +10,7 @@ from gaci_security_api.pagination import NoLimitResultsPagination
 # l'importe l'objet Q pour faciliter apartir de plusieurs champs
 from django.db.models import Q
 from .serializers import(
+    RecognizedSerializer,
     Want_To_ResearchSerializer, 
     Curfew_And_InstabilitySerializer, 
     Population_AlertSerializer
@@ -451,6 +452,37 @@ class Population_AlertDeleteView(
 # Ending Population_Alert
 
 
+# Starting Recognized
+# Lister une seul enregistrement
+class RecognizedDetailView(
+    generics.RetrieveAPIView):
+
+    renderer_classes = [UserRenderer] # le rendu de la vue
+    # on l'authentication
+    authentication_classes = [JWTAuthentication]
+    # on gere les permissions pour cette view (acces, ...)
+    permission_classes = [permissions.IsAuthenticated]
+
+    queryset = Recognized.objects.all()
+    serializer_class = RecognizedSerializer
+
+# Lister tous
+class RecognizedListView(
+    generics.ListAPIView):
+
+    renderer_classes = [UserRenderer] # le rendu de la vue
+    # on l'authentication
+    authentication_classes = [JWTAuthentication]
+    # on gere les permissions pour cette view (acces, ...)
+    permission_classes = [permissions.IsAuthenticated]
+
+    # gestion de page
+    # pagination_class = NoLimitResultsPagination  
+
+    queryset = Recognized.objects.all()
+    serializer_class = RecognizedSerializer  
+# end Recognized
+
 # code pour les views qui vont faire le streming
 # code pour verifier la correspondance faciale et retourner une reponse
 # lister etcreer au meme moment
@@ -488,8 +520,8 @@ class Try_RecognitionRunACheckListCreateView(APIView):
                 cap = cv2.VideoCapture(0)
                 
                 # code pour les cameras sur reseau
-                # url = f"http://{data['url']}/video"
-                # cap.open(url)
+                url = f"http://{data['url']}/video"
+                cap.open(url)
 
                 while True:
                     iterations = iterations + 1
